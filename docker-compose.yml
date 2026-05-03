@@ -1,0 +1,21 @@
+services:
+  api:
+    container_name: api_service
+    image: fastapi:dev
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./api:/app/
+    #ports:
+    #  - 8000:80
+  frontend:
+    image: frontend:html
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+    depends_on:
+      - api

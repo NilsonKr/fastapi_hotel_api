@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        font-family: Helvetica;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 60px;
+        color: chocolate;
+      }
+
+      .showcase {
+        display: flex;
+        gap: 50px;
+      }
+
+      .showcase img {
+        max-width: 300px;
+        max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Hello fastapi from docker container</h1>
+      <h3><i>Happy coding!</i></h3>
+      <section class="showcase">
+        <img
+          src="https://i.redd.it/funniest-pictures-of-cats-v0-jrl0ibqtt79f1.jpg?width=1536&format=pjpg&auto=webp&s=dd36b9221c3482b5e04a4346501cd52b095d0e09"
+          alt="gatito gachocho"
+        />
+        <img
+          src="https://i.pinimg.com/236x/05/10/8c/05108c1c1472a92b32b96d044c3a6ec2.jpg"
+          alt="gatito jocoso"
+        />
+      </section>
+    </main>
+    <script>
+      function fetchApi() {
+        fetch('api/')
+          .then(res => res.json())
+          .then(console.log)
+          .catch(console.log)
+      }
+
+      fetchApi()
+    </script>
+  </body>
+</html>
