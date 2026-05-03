@@ -1,0 +1,11 @@
+services:
+  api:
+    image: fastapi:dev
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/app/
