@@ -17,6 +17,6 @@ FROM base AS prod
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-COPY . .
+COPY ./app ./
 
 CMD ["fastapi", "run", "main.py", "--port", "80"]

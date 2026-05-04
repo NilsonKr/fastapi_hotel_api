@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from typing import Annotated
+from fastapi import FastAPI, Depends
 from sqlalchemy import Engine
 from sqlmodel import SQLModel,create_engine, Session
 
@@ -11,6 +12,8 @@ def create_tables(app: FastAPI):
   SQLModel.metadata.create_all(engine)
   yield
 
-def get_db_session(engine: Engine):
+def get_db_session():
   with Session(engine) as session:
     yield session
+
+SessionDep = Annotated[Session, Depends(get_db_session)]

@@ -1,6 +1,13 @@
+from typing import Generic, TypeVar
 from sqlmodel import SQLModel, Field
 from pydantic import BaseModel
 from datetime import datetime
+
+T = TypeVar('T')
+
+class APIResponse(BaseModel, Generic[T]):
+  detail: str
+  data: T
 
 class GuestModel(SQLModel):
   name: str
