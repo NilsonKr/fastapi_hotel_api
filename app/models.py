@@ -9,15 +9,22 @@ class APIResponse(BaseModel, Generic[T]):
   detail: str
   data: T
 
-class GuestModel(SQLModel):
+class GuestBase(SQLModel):
   name: str
   check_in_at: datetime = datetime.now()
   check_out_at: datetime
   amount: int
-
+  
   @property
   def total_amount(self):
     return self.amount
 
-class Guest(GuestModel, table=True):
+class Guest(GuestBase, table=True):
   id: int | None = Field(default=None, primary_key=True)
+
+class GuestPatch(GuestBase):
+  name: str | None = None
+  check_in_at: datetime | None = None
+  check_out_at: datetime | None = None
+  amount: int | None = None
+
