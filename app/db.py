@@ -1,16 +1,12 @@
+from pathlib import Path
 from typing import Annotated
-from fastapi import FastAPI, Depends
-from sqlalchemy import Engine
-from sqlmodel import SQLModel,create_engine, Session
+from fastapi import Depends
+from sqlmodel import create_engine, Session
 
-sqlitedb_name = 'db.sqlite3'
-sqlitedb_url = f'sqlite:///{sqlitedb_name}'
+sqlitedb_path = Path(__file__).resolve().parent / 'db.sqlite3'
+sqlitedb_url = f'sqlite:///{sqlitedb_path}'
 
 engine = create_engine(sqlitedb_url, echo=True)
-
-def create_tables(app: FastAPI):
-  SQLModel.metadata.create_all(engine)
-  yield
 
 def get_db_session():
   with Session(engine) as session:
