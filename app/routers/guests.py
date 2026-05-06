@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Query
 from typing import Annotated
 
-from ..models import Guest,GuestBase, GuestPatch, APIResponse
+from ..models import Guest, GuestBase, GuestPatch, APIResponse
 from ..db import SessionDep
 
 from ..utils.timezones import ALLOWED_ISO_ENUM, tz_by_iso
@@ -24,7 +24,7 @@ async def register_guest(session: SessionDep, limit: Annotated[int, Query()] = 0
 
 @router.post('/', response_model=APIResponse[Guest],status_code=201)
 async def register_guest(guest_data: GuestBase, session: SessionDep):
-  new_guest = guest_data 
+  new_guest = Guest.model_validate(guest_data) 
   
   session.add(new_guest)
   session.commit()
