@@ -1,10 +1,11 @@
+from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from zoneinfo import ZoneInfo
 from datetime import datetime 
 from fastapi import APIRouter, HTTPException, Query
 from typing import Annotated
 
-from ..models import Guest, GuestBase, GuestPatch, APIResponse
+from ..models import Guest, GuestBase, GuestRead, GuestPatch, APIResponse
 from ..db import SessionDep
 
 from ..utils.timezones import ALLOWED_ISO_ENUM, tz_by_iso
@@ -15,10 +16,19 @@ router = APIRouter(
   responses={404: {'description': 'Not found'}},
 )
 
-@router.get('/', response_model=APIResponse[list[Guest]], status_code=200)
-async def register_guest(session: SessionDep, limit: Annotated[int, Query()] = 0, offset: Annotated[int, Query()] = 0):
-  guests_from_db = session.exec(select(Guest).offset(offset).limit(limit))
-  return {'detail':'creation success', 'data': guests_from_db.all()}
+@router.get('/', response_model=APIResponse[list[GuestRead]], status_code=200)
+async def get_guests(session: SessionDep, limit: Annotated[int, Query()] = 100, offset: Annotated[int, Query()] = 0):
+  guests_from_db = session.exec(select(Guest).offset(offset).limit(limit).options(selectinload(Guest.guest_reservations))).all()
+
+  return {'detail':'creation success', 'data': guests_from_db}
+
+@router.get('/{guest_id}', response_model=APIResponse[GuestRead], status_code=200)
+async def get_guest(session: SessionDep, guest_id: int):
+  guest_from_db = session.exec(select(Guest).where(Guest.id == guest_id).options(selectinload(Guest.guest_reservations))).first()
+  
+  if not guest_from_db:
+    raise HTTPException(status_code=404, detail='Guest not found')
+  return {'detail':'creation success', 'data': guest_from_db}
 
 
 
@@ -37,8 +47,6 @@ async def register_guest(guest_data: GuestBase, session: SessionDep):
 async def patch_guest(guest_id: int, guest_data: GuestPatch, session: SessionDep):
   if not guest_data:
     raise HTTPException(status_code=400, detail='Payload is empty')
-
-  print(guest_data, 'PATCH ADATAAAAA')
 
   guest_db = session.get(Guest, guest_id) 
   if not guest_db:
@@ -69,5 +77,3 @@ async def getDate(iso_code: ALLOWED_ISO_ENUM):
   iso_tz = tz_by_iso.get(iso_code)
   tz = ZoneInfo(iso_tz)
   return {'date': datetime.now(tz).strftime('%Y-%m-%d %I:%M %p')}
-
-  return {'status':'guest sample create', }

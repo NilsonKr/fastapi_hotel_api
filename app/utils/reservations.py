@@ -1,0 +1,6 @@
+from enum import Enum
+
+class RESERVATIONS_STATUS_ENUM (str, Enum):
+  ACTIVE = 'ACTIVE'
+  CONFIRMED = 'CONFIRMED'
+  CANCELLED = 'CANCELLED'
