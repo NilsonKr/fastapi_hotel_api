@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from sqlmodel import select
 from typing import Annotated
 
 from ..models import Guest, Location, Reservation,ReservationPatch, APIResponse
@@ -25,6 +26,11 @@ async def add_guest_reservations(guest_id: int, location_id:int,session: Session
     if not guest or not location:
         raise HTTPException(status_code=404, detail='Guest not found')                                              
   
+    curr_reservation = session.exec(select(Reservation).where(Reservation.guest_id == guest_id, Reservation.location_id == location_id)).first()
+
+    if curr_reservation:
+         raise HTTPException(status_code=404, detail='Reservation already exist')    
+
     new_reservation = Reservation(guest_id=guest_id, location_id=location_id)
 
     session.add(new_reservation)
@@ -40,7 +46,7 @@ async def update_reservation(reservation_id: int, reservation_data: ReservationP
     if not reservation_data or not reservation:
         raise HTTPException(status_code=404, detail='Not reservation data')                                              
 
-    reservation.sqlmodel_update(ReservationPatch.model_dump(exclude_unset=True))
+    reservation.sqlmodel_update(reservation_data.model_dump(exclude_unset=True))
 
     session.add(reservation)
     session.commit()

@@ -1,6 +1,6 @@
 services:
   api:
-    image: fastapi:dev
+    image: myfastapi:dev
     build:
       context: ./
       dockerfile: Dockerfile
